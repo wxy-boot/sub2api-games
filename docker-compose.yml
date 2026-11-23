@@ -1,0 +1,9 @@
+services:
+  sub2api-games:
+    image: ghcr.io/wxy-boot/sub2api-games:latest
+    container_name: sub2api-games
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8790:8790"

@@ -1,0 +1,12 @@
+services:
+  sub2api-games:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sub2api-games:local
+    container_name: sub2api-games
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8790:8790"
