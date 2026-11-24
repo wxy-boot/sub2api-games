@@ -1,5 +1,5 @@
 import { escapeHtml } from "./escape.js";
-import { games } from "./games.js";
+import { games, gameEntryUrl, gameStyleUrls } from "./games.js";
 
 function basePathOf(config) {
   return config.publicBasePath === "/" ? "" : config.publicBasePath;
@@ -184,14 +184,17 @@ export function renderGamePage(config, game, { embed = false, theme = "light", u
 
   return `${head(config, {
     title: `${game.name} · ${config.title}`,
-    scripts: [`/games/${game.id}.js`],
+    styles: ["/styles.css", ...gameStyleUrls(game)],
+    scripts: [gameEntryUrl(game)],
     theme
   })}
   <body class="game-page${embedded ? " is-embed" : ""}" data-play-state="idle" data-game="${escapeHtml(
     game.id
   )}" data-best-key="${escapeHtml(game.bestKey || game.id)}" data-score-label="${escapeHtml(
     game.scoreLabel || "最高分"
-  )}">
+  )}"${
+    game.touchHint ? ` data-touch-hint="${escapeHtml(game.touchHint)}"` : ""
+  }>
     <main class="game-shell">
       <header class="game-head">
         <div class="game-id">
@@ -251,7 +254,9 @@ export function renderGamePage(config, game, { embed = false, theme = "light", u
                 <p id="overlayText">${escapeHtml(game.description)}</p>
                 <div class="overlay-stats" id="overlayStats"></div>
                 <button class="primary-button" id="overlayButton" type="button">开始游戏</button>
-                <p class="overlay-hint" id="overlayHint">空格 暂停 · 回车 开始</p>
+                <p class="overlay-hint" id="overlayHint">${escapeHtml(
+                  game.overlayHint || "空格 暂停 · 回车 开始"
+                )}</p>
               </div>
             </div>
             <div class="stage-toast" id="toast" hidden></div>

@@ -10,7 +10,7 @@
     "dev": "node --watch src/server.js",
     "check": "node scripts/check.mjs",
     "test": "node --test \"tests/*.test.js\"",
-    "test:direct": "node tests/server.test.js && node tests/game.test.js"
+    "test:direct": "node tests/server.test.js && node tests/game.test.js && node tests/tetris.test.js"
   },
   "engines": {
     "node": ">=22.5.0"

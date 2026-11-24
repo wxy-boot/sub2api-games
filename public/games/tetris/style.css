@@ -1,0 +1,62 @@
+/* =========================================================================
+   俄罗斯方块 · 画布配色
+   只在 /play/tetris 页加载；canvas 代码通过 getComputedStyle 读这些变量。
+   棋子颜色写在 JS 里（七种颜色有语义），这里只管棋盘、网格和侧栏预览。
+   ========================================================================= */
+
+:root,
+[data-theme="light"] {
+  --board-bg: #f1edfd;
+  --tetris-board-a: #fbfaff;
+  --tetris-board-b: #f1edfd;
+  --tetris-grid: rgba(124, 92, 255, 0.08);
+  --tetris-ink: #16202b;
+  --tetris-sub: rgba(22, 32, 43, 0.55);
+  --tetris-vignette: rgba(56, 32, 110, 0.07);
+  --tetris-gutter: #e9e5f7;
+  --tetris-frame: rgba(124, 92, 255, 0.2);
+  --tetris-glow: rgba(124, 92, 255, 0.09);
+  --tetris-panel: rgba(255, 255, 255, 0.7);
+  --tetris-panel-active: rgba(124, 92, 255, 0.12);
+  --tetris-panel-line: rgba(16, 24, 40, 0.08);
+  --tetris-panel-ink: #16202b;
+  --tetris-panel-label: rgba(22, 32, 43, 0.5);
+}
+
+[data-theme="dark"] {
+  --board-bg: #100d1b;
+  --tetris-board-a: #171327;
+  --tetris-board-b: #100d1b;
+  --tetris-grid: rgba(167, 139, 250, 0.1);
+  --tetris-ink: #ece9f7;
+  --tetris-sub: rgba(236, 233, 247, 0.6);
+  --tetris-vignette: rgba(0, 0, 0, 0.45);
+  --tetris-gutter: #0b0913;
+  --tetris-frame: rgba(167, 139, 250, 0.26);
+  --tetris-glow: rgba(167, 139, 250, 0.12);
+  --tetris-panel: rgba(30, 25, 48, 0.72);
+  --tetris-panel-active: rgba(167, 139, 250, 0.18);
+  --tetris-panel-line: rgba(255, 255, 255, 0.08);
+  --tetris-panel-ink: #ece9f7;
+  --tetris-panel-label: rgba(236, 233, 247, 0.55);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --board-bg: #100d1b;
+    --tetris-board-a: #171327;
+    --tetris-board-b: #100d1b;
+    --tetris-grid: rgba(167, 139, 250, 0.1);
+    --tetris-ink: #ece9f7;
+    --tetris-sub: rgba(236, 233, 247, 0.6);
+    --tetris-vignette: rgba(0, 0, 0, 0.45);
+    --tetris-gutter: #0b0913;
+    --tetris-frame: rgba(167, 139, 250, 0.26);
+    --tetris-glow: rgba(167, 139, 250, 0.12);
+    --tetris-panel: rgba(30, 25, 48, 0.72);
+    --tetris-panel-active: rgba(167, 139, 250, 0.18);
+    --tetris-panel-line: rgba(255, 255, 255, 0.08);
+    --tetris-panel-ink: #ece9f7;
+    --tetris-panel-label: rgba(236, 233, 247, 0.55);
+  }
+}

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { createApp } from "../src/app.js";
-import { games, readyGames } from "../src/games.js";
+import { games, gameEntryUrl, readyGames } from "../src/games.js";
 
 let server;
 let base = "";
@@ -42,7 +42,7 @@ describe("大厅与游戏页", () => {
     assert.match(html, /id="canvas"/);
     assert.match(html, /id="overlay"/);
     assert.match(html, /id="overlayButton"/);
-    assert.match(html, /\/games\/snake\.js/);
+    assert.match(html, /\/games\/snake\/index\.js/);
     assert.doesNotMatch(html, /is-embed/);
   });
 
@@ -125,7 +125,7 @@ describe("接口", () => {
 describe("静态资源", () => {
   test("样式和脚本按类型返回", async () => {
     const css = await fetch(`${base}/styles.css`);
-    const snake = await fetch(`${base}/games/snake.js`);
+    const snake = await fetch(`${base}/games/snake/index.js`);
 
     assert.equal(css.status, 200);
     assert.match(css.headers.get("content-type"), /text\/css/);
@@ -192,8 +192,8 @@ describe("basename 部署", () => {
 describe("游戏注册表", () => {
   test("每个已上线游戏都有对应的前端模块", async () => {
     for (const game of readyGames) {
-      const response = await fetch(`${base}/games/${game.id}.js`);
-      assert.equal(response.status, 200, `${game.id} 缺少 public/games/${game.id}.js`);
+      const response = await fetch(`${base}${gameEntryUrl(game)}`);
+      assert.equal(response.status, 200, `${game.id} 缺少 public/games/${game.id}/index.js`);
       assert.match(await response.text(), /startGame\(/);
     }
   });

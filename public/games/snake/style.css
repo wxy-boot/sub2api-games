@@ -1,0 +1,71 @@
+/* =========================================================================
+   贪吃蛇 · 画布配色
+   只在 /play/snake 页加载；canvas 代码通过 getComputedStyle 读这些变量，
+   所以浅色/深色共用同一份绘制逻辑，换肤不用改 JS。
+   ========================================================================= */
+
+:root,
+[data-theme="light"] {
+  --board-bg: #eef4f1;
+  --snake-board-a: #f9fcfb;
+  --snake-board-b: #eef4f1;
+  --snake-grid: rgba(15, 158, 145, 0.055);
+  --snake-edge: rgba(15, 158, 145, 0.2);
+  --snake-ink: #16202b;
+  --snake-vignette: rgba(20, 64, 57, 0.06);
+  --snake-sub: rgba(22, 32, 43, 0.6);
+  --snake-glow: rgba(15, 158, 145, 0.07);
+  --snake-gutter: #e7efec;
+  --snake-wall: #5f807a;
+  --snake-wall-top: rgba(255, 255, 255, 0.55);
+  --snake-wall-shadow: rgba(16, 58, 52, 0.18);
+  --snake-hud-bg: rgba(255, 255, 255, 0.9);
+  --snake-hud-line: rgba(16, 24, 40, 0.08);
+  --snake-hud-ink: #16202b;
+  --snake-hud-label: rgba(22, 32, 43, 0.55);
+  --snake-gold: #b7791f;
+}
+
+[data-theme="dark"] {
+  --board-bg: #0d151a;
+  --snake-board-a: #121c23;
+  --snake-board-b: #0d151a;
+  --snake-grid: rgba(46, 201, 183, 0.1);
+  --snake-edge: rgba(46, 201, 183, 0.22);
+  --snake-ink: #e9eef5;
+  --snake-vignette: rgba(0, 0, 0, 0.4);
+  --snake-sub: rgba(233, 238, 245, 0.65);
+  --snake-glow: rgba(46, 201, 183, 0.1);
+  --snake-gutter: #0a1319;
+  --snake-wall: #467b73;
+  --snake-wall-top: rgba(255, 255, 255, 0.16);
+  --snake-wall-shadow: rgba(0, 0, 0, 0.45);
+  --snake-hud-bg: rgba(16, 26, 34, 0.72);
+  --snake-hud-line: rgba(255, 255, 255, 0.08);
+  --snake-hud-ink: #e9eef5;
+  --snake-hud-label: rgba(233, 238, 245, 0.6);
+  --snake-gold: #e0a94a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --board-bg: #0d151a;
+    --snake-board-a: #121c23;
+    --snake-board-b: #0d151a;
+    --snake-grid: rgba(46, 201, 183, 0.1);
+    --snake-edge: rgba(46, 201, 183, 0.22);
+    --snake-ink: #e9eef5;
+    --snake-vignette: rgba(0, 0, 0, 0.4);
+    --snake-sub: rgba(233, 238, 245, 0.65);
+    --snake-glow: rgba(46, 201, 183, 0.1);
+    --snake-gutter: #0a1319;
+    --snake-wall: #467b73;
+    --snake-wall-top: rgba(255, 255, 255, 0.16);
+    --snake-wall-shadow: rgba(0, 0, 0, 0.45);
+    --snake-hud-bg: rgba(16, 26, 34, 0.72);
+    --snake-hud-line: rgba(255, 255, 255, 0.08);
+    --snake-hud-ink: #e9eef5;
+    --snake-hud-label: rgba(233, 238, 245, 0.6);
+    --snake-gold: #e0a94a;
+  }
+}

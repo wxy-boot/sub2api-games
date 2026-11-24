@@ -4,6 +4,8 @@
  * 以及和父页面（sub2api）之间的 postMessage 通信。
  *
  * 游戏模块只需要实现 create(env) → { reset, update, draw, onDirection }。
+ * 需要更多按键（如俄罗斯方块的旋转、直落、暂存）再额外提供
+ * onKey(key) → boolean / onKeyUp(key) / onTap()，外壳会把按键先交给它。
  */
 
 const STORAGE_PREFIX = "sub2api-games:";
@@ -85,7 +87,10 @@ export function startGame(create) {
     badge: dom.overlayBadge?.textContent || "准备开始",
     title: dom.overlayTitle?.textContent || "准备好了吗",
     text: dom.overlayText?.textContent || "",
-    hint: hint(dom.overlayHint?.textContent || "", "点按开始 · 滑动控制方向")
+    hint: hint(
+      dom.overlayHint?.textContent || "",
+      page.dataset.touchHint || "点按开始 · 滑动控制方向"
+    )
   };
 
   const storage = createStorage();
@@ -131,6 +136,16 @@ export function startGame(create) {
     },
     sound(name) {
       sound.play(name);
+    },
+    /** 当前状态："idle" | "running" | "paused" | "over"。 */
+    getState() {
+      return game.state;
+    },
+    togglePause() {
+      togglePause();
+    },
+    restart() {
+      start();
     },
     storage
   };
@@ -545,11 +560,19 @@ export function startGame(create) {
         return;
       }
 
+      sound.unlock();
+
+      // 游戏可以先接管按键（俄罗斯方块拿空格直落、↑ 旋转），返回 true 表示已消费，
+      // 外壳就不再执行自己的空格/回车/方向键默认行为。
+      if (instance?.onKey?.(event.key, event)) {
+        event.preventDefault();
+        return;
+      }
+
       const dir = KEY_DIRS.get(event.key);
 
       if (dir) {
         event.preventDefault();
-        sound.unlock();
 
         if (game.state === "idle") {
           start();
@@ -561,14 +584,12 @@ export function startGame(create) {
 
       if (event.key === " " || event.code === "Space") {
         event.preventDefault();
-        sound.unlock();
         togglePause();
         return;
       }
 
       if (event.key === "Enter") {
         event.preventDefault();
-        sound.unlock();
 
         if (game.state === "running") {
           pause("manual");
@@ -583,12 +604,16 @@ export function startGame(create) {
 
       if (event.key === "r" || event.key === "R") {
         event.preventDefault();
-        sound.unlock();
         start();
       }
     },
     { passive: false }
   );
+
+  // 有按键抬起才能做 DAS / 长按软降，所以把 keyup 也转给游戏。
+  window.addEventListener("keyup", (event) => {
+    instance?.onKeyUp?.(event.key, event);
+  });
 
   // 触屏滑动：只在画布上生效，避免影响页面滚动。
   let pointerStart = null;
@@ -611,6 +636,12 @@ export function startGame(create) {
     if (Math.abs(dx) < threshold && Math.abs(dy) < threshold) {
       if (game.state === "idle") {
         start();
+        return;
+      }
+
+      // 轻点：棋盘类游戏用它做「直落」这类单次动作。
+      if (game.state === "running") {
+        instance?.onTap?.();
       }
 
       return;
@@ -931,6 +962,32 @@ function createSound(storage) {
     },
     click: () => tone(440, 0.05, { type: "sine", gain: 0.03 }),
     pause: () => tone(320, 0.1, { type: "sine", gain: 0.035 }),
+    // 方块类游戏用的短音：移动、旋转要轻，别吵。
+    move: () => tone(300, 0.035, { type: "square", gain: 0.014 }),
+    rotate: () => tone(430, 0.05, { type: "triangle", gain: 0.028 }),
+    hold: () => {
+      tone(520, 0.06, { type: "triangle", gain: 0.03 });
+      tone(690, 0.07, { type: "triangle", gain: 0.024, delay: 0.05 });
+    },
+    drop: () => {
+      tone(220, 0.09, { type: "sawtooth", gain: 0.03, slide: -110 });
+      tone(90, 0.14, { type: "sine", gain: 0.045, delay: 0.03 });
+    },
+    lock: () => {
+      tone(180, 0.07, { type: "square", gain: 0.024 });
+      tone(120, 0.09, { type: "sine", gain: 0.03, delay: 0.03 });
+    },
+    clear: () => {
+      tone(620, 0.08, { type: "triangle", gain: 0.04 });
+      tone(820, 0.09, { type: "triangle", gain: 0.036, delay: 0.06 });
+      tone(1040, 0.11, { type: "sine", gain: 0.03, delay: 0.12 });
+    },
+    bigclear: () => {
+      tone(660, 0.09, { type: "triangle", gain: 0.045 });
+      tone(880, 0.09, { type: "triangle", gain: 0.042, delay: 0.07 });
+      tone(1100, 0.1, { type: "triangle", gain: 0.038, delay: 0.14 });
+      tone(1320, 0.16, { type: "sine", gain: 0.034, delay: 0.21 });
+    },
     over: () => {
       tone(360, 0.2, { type: "sawtooth", gain: 0.03, slide: -170 });
       tone(190, 0.3, { type: "sine", gain: 0.04, delay: 0.1 });

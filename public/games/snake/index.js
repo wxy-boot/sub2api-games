@@ -1,4 +1,4 @@
-import { startGame } from "../shell.js";
+import { startGame } from "../../shell.js";
 
 /**
  * 贪吃蛇。
